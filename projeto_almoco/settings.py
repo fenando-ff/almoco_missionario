@@ -37,7 +37,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-la6u6mo5*&s3b#)nx_e
 DEBUG = os.getenv('DJANGO_DEBUG', 'DEBUG').lower() in ('1', 'true', 'yes')
 
 # ALLOWED_HOSTS can be configured via env var (comma-separated)
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'Nando7125.pythonanywhere.com']
 
 
 # Application definition
