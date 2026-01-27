@@ -1,0 +1,139 @@
+:root{
+  --bg:#f7f7f8;
+  --card:#ffffff;
+  --accent:#2b7cff;
+}
+*{box-sizing:border-box}
+.body-old{/* backup of previous body style */}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#111;margin:0;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center}
+.page-main{flex:1;display:flex;width:100%;align-items:flex-start;justify-content:center;padding-top:12px}
+.container{max-width:480px;width:100%;padding:18px}
+.month-header{text-align:center;margin-bottom:8px}
+.month-header{display:flex;justify-content:center;margin-bottom:8px}
+.month-header h1{font-size:1.6rem;margin:0}
+.month-nav{display:flex;align-items:center;gap:8px}
+
+/* Secondary header: user name and logout as smaller header */
+.secondary-header{display:none}
+.user-banner{width:100%;display:flex;justify-content:flex-end;padding:8px 12px;background:transparent}
+.user-banner .header-actions{gap:8px;max-width:480px;margin:0 auto;width:100%;justify-content:flex-end}
+.user-banner .user-name{font-size:.95rem}
+/* keep title from resizing container; truncate long month names */
+#month-title{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;text-align:center;font-size:1.2rem}
+.nav-btn{background:var(--accent);border:none;color:#fff;font-size:1rem;padding:6px 8px;border-radius:6px;cursor:pointer}
+.nav-btn:hover{background:#1f5fdc}
+.month-selects{display:flex;gap:8px;align-items:center}
+.month-selects select{padding:6px 8px;border-radius:6px;border:1px solid #ddd;background:#fff}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:96%;margin:0 auto 6px}
+.weekdays div{font-size:.75rem;text-align:center;color:#555}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:96%;margin:0 auto;
+  /* Reserve space for up to 6 weeks so header/navigation doesn't shift between months */
+  /* Calculation: 6 * day min-height + 5 * row-gap (8px) */
+  /* mobile default day min-height = 72px -> min-height = 6*72 + 5*8 = 472px */
+  min-height:472px;
+}
+.day-block{background:var(--card);min-height:72px;border-radius:8px;padding:4px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer}
+.day-block.empty{background:transparent;box-shadow:none;cursor:default}
+.day-block{background:var(--card);min-height:72px;border-radius:8px;padding:8px;position:relative;box-shadow:0 1px 4px rgba(0,0,0,0.06);cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start}
+.day-block.empty{background:transparent;box-shadow:none;cursor:default}
+.day-number{position:relative;left:auto;top:auto;font-size:0.85rem;color:#333;font-weight:600}
+.day-info{margin-top:8px;font-size:0.95rem;color:#111;word-break:break-word}
+.day-info .phone{display:block;color:#666;font-size:.8rem}
+
+/* reserved icon shown in calendar cells when a day is booked */
+.reserved-icon{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;margin:18px auto 0;box-shadow:0 2px 6px rgba(43,124,255,0.18)}
+.reserved-icon i{font-size:16px;line-height:1;color:#fff}
+
+@media (min-width:520px){
+  .reserved-icon{width:42px;height:42px;margin-top:22px}
+  .reserved-icon i{font-size:18px}
+}
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);z-index:2000}
+.modal.hidden{display:none}
+.modal-content{background:var(--card);padding:18px;border-radius:10px;width:92%;max-width:420px;box-shadow:0 10px 36px rgba(0,0,0,0.22)}
+.modal-content h2{font-size:1.15rem;margin:0 0 8px 0}
+.modal-content h2{margin:0 0 8px 0}
+  .calendar{width:85%;gap:12px}
+label{display:block;margin-top:8px;font-size:.85rem}
+input[type=text]{width:100%;padding:8px;margin-top:4px;border:1px solid #ddd;border-radius:6px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+button{background:var(--accent);color:white;padding:10px 12px;border:none;border-radius:8px;cursor:pointer}
+button#cancel-btn{background:#ddd;color:#111}
+
+.hidden{display:none}
+.danger{background:#e04b4b}
+
+/* Better focus styles for keyboard users */
+button:focus, .nav-btn:focus, .logout-btn:focus, .month-nav button:focus{outline:3px solid rgba(43,124,255,0.18);outline-offset:2px}
+
+/* Export button distinct */
+#export-pdf{background:#0b76d1;padding:8px 10px;border-radius:8px;font-weight:600}
+#export-pdf:hover{background:#085ea8}
+
+/* Weekday labels clearer */
+.weekdays div{font-size:.8rem;text-align:center;color:#333;font-weight:600}
+
+/* Small screens: increase hit area for day blocks */
+@media (max-width:520px){
+  .day-block{padding:8px;min-height:80px}
+  .day-number{font-size:1rem}
+}
+
+/* Confirm modal overrides to make it slightly smaller */
+#confirm-modal .modal-content{max-width:320px}
+#confirm-modal p{margin:0 0 12px 0;font-size:1rem}
+#confirm-modal .modal-actions{justify-content:flex-end}
+
+@media (min-width:520px){
+  .container{padding:28px}
+  .day-block{min-height:88px}
+  /* desktop: adjust calendar min-height for larger day blocks */
+  .calendar{min-height:568px} /* 6*88 + 5*8 = 568 */
+  .month-nav{width:320px;min-width:260px}
+  #month-title{max-width:220px;font-size:1.4rem}
+}
+
+/* Mobile: push month nav buttons toward screen edges and center title */
+@media (max-width:520px){
+  .month-header{padding:0 6px}
+  .month-nav{width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 6px}
+  #month-title{flex:1;text-align:center;margin:0;font-size:1.1rem}
+  .nav-btn{padding:8px 10px;border-radius:6px}
+  /* keep compact container padding */
+  .container{padding:12px}
+  /* Fix mobile layout: make calendars and weekday labels full-width to avoid horizontal overflow */
+  .weekdays, .calendar{width:100%;box-sizing:border-box;margin:0;gap:6px}
+  .calendar{padding:0}
+  /* Ensure modal overlays correctly on mobile */
+  .modal{z-index:2000}
+  .modal-content{width:94%;max-width:420px}
+}
+
+@media (min-width:1024px){
+  /* Desktop: wider container and calendar spacing */
+  .container{max-width:1100px}
+  .month-nav{width:100%;max-width:980px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  #month-title{flex:1;text-align:center;max-width:none;font-size:1.6rem}
+  .nav-btn{padding:8px 12px;border-radius:8px}
+  .calendar{width:92%;gap:10px}
+  .day-block{min-height:100px;padding:8px}
+}
+
+.container{max-width:480px;width:100%;padding:18px}
+
+@media (min-width:1024px){
+  .container{max-width:900px}
+}
+
+/* Ensure weekday labels grid matches calendar grid on desktop */
+@media (min-width:1024px){
+  .weekdays{width:92%;gap:10px;margin:0 auto 6px}
+}
+
+.welcome-banner{width:100%;text-align:center;padding:12px 8px;background:var(--accent);color:#fff;font-weight:600}
+
+.header-actions{display:flex;align-items:center;gap:8px}
+.user-name{color:#333;font-weight:600;margin-right:8px}
+.logout-btn{background:var(--accent);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer}
+.logout-btn:hover{opacity:0.95}
+.welcome-banner{width:100%;text-align:center;padding:12px 8px;background:var(--accent);color:#fff;font-weight:600}

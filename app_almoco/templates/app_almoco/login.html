@@ -1,0 +1,35 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Login - Agendar Almoço</title>
+  <link rel="stylesheet" href="{% static 'app_almoco/style.css' %}">
+</head>
+<body>
+  <div class="welcome-banner">Bem-vinda — Agende seu almoço</div>
+  <div class="page-main">
+    <main class="container">
+      <div class="card">
+        <h2>Entrar</h2>
+        {% if error %}
+          <p style="color:#c33">{{ error }}</p>
+        {% endif %}
+        <form method="post" action="{% url 'app_almoco:login' %}">
+          {% csrf_token %}
+          <label>Nome</label>
+          <input type="text" name="nome" required>
+          <label>Telefone</label>
+          <input type="text" name="telefone" id="telefone" data-phone-input inputmode="numeric" required placeholder="(00) 90000-0000">
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+            <button type="submit">Entrar</button>
+          </div>
+        </form>
+        <p style="margin-top:12px">Não tem cadastro? <a href="{% url 'app_almoco:signup' %}">Cadastre-se</a></p>
+      </div>
+    </main>
+  </div>
+  <script src="{% static 'app_almoco/phone.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Agendar Almoço</title>
+  <link rel="stylesheet" href="{% static 'app_almoco/style.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="welcome-banner">Bem-vinda — Agende seu almoço</div>
+  <div class="user-banner">
+    <div class="header-actions">
+      <span class="user-name">{{ pessoa_name }}</span>
+      <button id="logout-btn" class="logout-btn" onclick="location.href='{% url 'app_almoco:logout' %}'">Sair</button>
+    </div>
+  </div>
+  <div class="page-main">
+    <main class="container">
+
+      <header class="month-header">
+        <div class="month-nav">
+          <button id="prev-month" class="nav-btn">◀</button>
+          <h1 id="month-title">{{ month_name }} {{ year }}</h1>
+          <button id="next-month" class="nav-btn">▶</button>
+          <button id="export-pdf" class="nav-btn" title="Exportar calendário como PDF">Exportar PDF</button>
+        </div>
+      </header>
+
+      <section class="weekdays">
+        <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+      </section>
+
+      <section class="calendar" id="calendar">
+        <!-- JS will populate days -->
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="modal-title">Agendar Almoço</h2>
+      <input type="hidden" id="form-dia" name="dia">
+      <div id="modal-body">
+        <p id="modal-message">Deseja agendar neste dia?</p>
+        <div id="modal-person" class="hidden">
+          <p><strong id="person-name"></strong></p>
+          <p id="person-phone"></p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="cancel-btn">Cancelar</button>
+        <button type="button" id="delete-btn" class="danger hidden">Desmarcar</button>
+        <button type="button" id="confirm-btn">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-content">
+      <p id="confirm-message">Tem certeza?</p>
+      <div class="modal-actions">
+        <button type="button" id="confirm-cancel">Cancelar</button>
+        <button type="button" id="confirm-ok" class="danger">Desmarcar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let RESERVATIONS = {};
+    let YEAR = {{ year }};
+    let MONTH = {{ month }}; // 1-12
+    const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script src="{% static 'app_almoco/app.js' %}"></script>
+</body>
+</html>
