@@ -23,8 +23,8 @@ except Exception:
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables from .env at project root (if present)
-load_dotenv(str(BASE_DIR / '.env'))
+# Load environment variables from .env (if present)
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,7 +37,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-la6u6mo5*&s3b#)nx_e
 DEBUG = os.getenv('DJANGO_DEBUG', 'DEBUG').lower() in ('1', 'true', 'yes')
 
 # ALLOWED_HOSTS can be configured via env var (comma-separated)
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'Nando7125.pythonanywhere.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -86,25 +87,22 @@ WSGI_APPLICATION = 'projeto_almoco.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
+# Usando Sqlite para desenvolvimento local
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # Default to Postgres
-        'NAME': os.getenv('DB_NAME',),
-        'USER': os.getenv('DB_USER',),
-        'PASSWORD': os.getenv('DB_PASSWORD',),
-        'HOST': os.getenv('DB_HOST',),
-        'PORT': os.getenv('DB_PORT',),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
 # If DATABASE_URL is provided (e.g. Supabase), use it (overrides the above)
-DATABASE_URL = os.getenv('DATABASE_URL')
-if DATABASE_URL and dj_database_url:
-    # Use dj_database_url to parse and set proper ENGINE and options
-    DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    # Ensure SSL for Postgres (Supabase) if not present
-    if DATABASES['default'].get('ENGINE', '').startswith('django.db.backends.postgresql'):
-        DATABASES['default'].setdefault('OPTIONS', {})
-        DATABASES['default']['OPTIONS'].setdefault('sslmode', 'require')
+# DATABASE_URL = os.getenv('DATABASE_URL')
+# if DATABASE_URL and dj_database_url:
+#     # Use dj_database_url to parse and set proper ENGINE and options
+#     DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+#     # Ensure SSL for Postgres (Supabase) if not present
+#     if DATABASES['default'].get('ENGINE', '').startswith('django.db.backends.postgresql'):
+#         DATABASES['default'].setdefault('OPTIONS', {})
+#         DATABASES['default']['OPTIONS'].setdefault('sslmode', 'require')
 
 
 # Password validation
@@ -145,6 +143,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 # directory where `collectstatic` will copy files for serving in production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Use WhiteNoise to serve static files when DEBUG is False
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # If the site runs behind a proxy (like PythonAnywhere), allow secure proxy header
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
