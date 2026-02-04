@@ -34,7 +34,7 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = 'django-insecure-la6u6mo5*&s3b#)nx_eupkwxp*6#awe%ax01o6w@br8aflwu2w'
 
 # DEBUG should be False in production; set env var DJANGO_DEBUG=True to enable
-DEBUG = True
+DEBUG = False
 
 # ALLOWED_HOSTS can be configured via env var (comma-separated)
 ALLOWED_HOSTS = ['nando7125.pythonanywhere.com', 'localhost', '127.0.0.1']
