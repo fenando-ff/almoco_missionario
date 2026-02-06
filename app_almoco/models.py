@@ -11,7 +11,7 @@ class Pessoa(models.Model):
 		managed = True
 
 	def __str__(self) -> str:
-		return f"{self.nome_completo} ({self.telefone})"
+		return f"{self.nome_completo}"
 
 
 class DiaAlmoco(models.Model):
