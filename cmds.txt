@@ -1,0 +1,4 @@
+- workon almoco_missionario-env: Entrar no ambiente virtual
+- cd almoco_missionario: entrar no projeto
+- git pull: baixar atualizações do github
+- python manage.py collectstatic: aplica as mudanças estáticas da atualizações baixadas
