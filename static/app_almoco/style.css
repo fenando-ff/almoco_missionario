@@ -3,35 +3,147 @@
   --card:#ffffff;
   --accent:#2b7cff;
 }
-*{box-sizing:border-box}
+* {
+  box-sizing:border-box
+}
 .body-old{/* backup of previous body style */}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#111;margin:0;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center}
-.page-main{flex:1;display:flex;width:100%;align-items:flex-start;justify-content:center;padding-top:12px}
-.container{max-width:480px;width:100%;padding:18px}
-.month-header{text-align:center;margin-bottom:8px}
-.month-header{display:flex;justify-content:center;margin-bottom:8px}
-.month-header h1{font-size:1.6rem;margin:0}
-.month-nav{display:flex;align-items:center;gap:8px}
+
+body {
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;
+  color:#111;
+  margin:0;
+  background:var(--bg);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center
+}
+
+.page-main{
+  flex:1;
+  display:flex;
+  width:100%;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:12px
+}
+
+.container{
+  max-width:480px;
+  width:100%;
+  padding:18px
+}
+
+.month-header{
+  text-align:center;
+  margin-bottom:8px
+}
+
+.month-header{
+  display:flex;
+  justify-content:center;
+  margin-bottom:8px
+}
+
+.month-header h1{
+  font-size:1.6rem;
+  margin:0
+}
+
+.month-nav{
+  display:flex;
+  align-items:center;
+  gap:8px
+}
 
 /* Secondary header: user name and logout as smaller header */
-.secondary-header{display:none}
-.user-banner{width:100%;display:flex;justify-content:flex-end;padding:8px 12px;background:transparent}
-.user-banner .header-actions{gap:8px;max-width:480px;margin:0 auto;width:100%;justify-content:flex-end}
-.user-banner .user-name{font-size:.95rem}
+.secondary-header{
+  display:none
+}
+
+.user-banner{
+  width:100%;
+  display:flex;
+  justify-content:flex-end;
+  padding:8px 12px;
+  background:transparent
+
+}
+.user-banner .header-actions{
+  gap:8px;
+  max-width:480px;
+  margin:0 auto;
+  width:100%;
+  justify-content:flex-end
+}
+
+.user-banner .user-name{
+  font-size:.95rem
+}
 /* keep title from resizing container; truncate long month names */
-#month-title{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;text-align:center;font-size:1.2rem}
-.nav-btn{background:var(--accent);border:none;color:#fff;font-size:1rem;padding:6px 8px;border-radius:6px;cursor:pointer}
-.nav-btn:hover{background:#1f5fdc}
-.month-selects{display:flex;gap:8px;align-items:center}
-.month-selects select{padding:6px 8px;border-radius:6px;border:1px solid #ddd;background:#fff}
-.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:96%;margin:0 auto 6px}
-.weekdays div{font-size:.75rem;text-align:center;color:#555}
-.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:96%;margin:0 auto;
+#month-title{
+  margin:0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:140px;
+  text-align:center;
+  font-size:1.2rem
+}
+
+.nav-btn{background:var(--accent);
+  border:none;
+  color:#fff;
+  font-size:1rem;
+  padding:6px 8px;
+  border-radius:6px;
+  cursor:pointer
+}
+
+.nav-btn:hover{
+  background:#1f5fdc
+}
+
+.month-selects{
+  display:flex;
+  gap:8px;
+  align-items:center
+}
+
+.month-selects select{
+  padding:6px 8px;
+  border-radius:6px;
+  border:1px solid #ddd;
+  background:#fff
+}
+
+.weekdays{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+  width:96%;
+  margin:0 auto 6px
+}
+
+.weekdays div {
+  font-size:.75rem;
+  text-align:center;
+  color:#555
+}
+
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+  width:96%;
+  margin:0 auto;
   /* Reserve space for up to 6 weeks so header/navigation doesn't shift between months */
   /* Calculation: 6 * day min-height + 5 * row-gap (8px) */
   /* mobile default day min-height = 72px -> min-height = 6*72 + 5*8 = 472px */
   min-height:472px;
+
 }
+
 .day-block{background:var(--card);min-height:72px;border-radius:8px;padding:4px;position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer}
 .day-block.empty{background:transparent;box-shadow:none;cursor:default}
 .day-block{background:var(--card);min-height:72px;border-radius:8px;padding:8px;position:relative;box-shadow:0 1px 4px rgba(0,0,0,0.06);cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start}

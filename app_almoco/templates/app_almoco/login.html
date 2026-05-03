@@ -19,7 +19,7 @@
         <form method="post" action="{% url 'app_almoco:login' %}">
           {% csrf_token %}
           <label>Nome</label>
-          <input type="text" name="nome" required>
+          <input type="text" name="nome" required placeholder="Seu nome aqui">
           <label>Telefone</label>
           <input type="text" name="telefone" id="telefone" data-phone-input inputmode="numeric" required placeholder="(00) 90000-0000">
           <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">

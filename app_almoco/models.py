@@ -9,6 +9,7 @@ class Pessoa(models.Model):
 	class Meta:
 		db_table = 'pessoa'
 		managed = True
+		ordering = ['nome_completo']
 
 	def __str__(self) -> str:
 		return f"{self.nome_completo}"

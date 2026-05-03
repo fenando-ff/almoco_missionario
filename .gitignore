@@ -151,4 +151,5 @@ cython_debug/
 .idea/
 
 staticfiles/
+cmds.txt
 testes_front/
