@@ -1,0 +1,34 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="adopt-website-id" content="3156c246-0920-4576-8d73-73d2e595e591" />
+  <link rel="icon" type="image/png" href="{% static 'app_almoco/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'app_almoco/style.css' %}">
+  <script src="//tag.goadopt.io/injector.js?website_code=3156c246-0920-4576-8d73-73d2e595e591" class="adopt-injector"></script>
+  <title>{% block title %}Agendar Almoço{% endblock %}</title>
+</head>
+<body>
+    <header class="welcome-banner">Bem-vinda {{ pessoa_name }} — Agende seu almoço</header>
+  
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        <div class="footer-content">
+            <p>Desenvolvido por Fernando Freitas</p>
+        </div>
+    </footer>
+  <script>
+    let RESERVATIONS = {};
+    let YEAR = {{ year }};
+    let MONTH = {{ month }}; // 1-12
+    const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <script src="{% static 'app_almoco/app.js' %}"></script>
+</body>
+</html>

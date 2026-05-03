@@ -2,10 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from .models import Pessoa, DiaAlmoco
-import datetime
-import calendar
-import json
+from ..models import Pessoa, DiaAlmoco
+import datetime, calendar, json
+
 
 
 def index(request):
