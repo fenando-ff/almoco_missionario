@@ -489,6 +489,33 @@ button#cancel-btn {
   background: var(--danger);
 }
 
+.card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 1px 4px var(--shadow);
+}
+
+.form-error {
+  color: var(--error);
+  font-weight: 600;
+  font-size: var(--font-sm);
+  margin: 8px 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.form-footer {
+  margin-top: 12px;
+  font-size: var(--font-sm);
+  color: #444;
+}
+
 .calendar-empty-state {
   display: none;
   text-align: center;
@@ -562,4 +589,70 @@ button:focus,
 .legend-dot--available {
   background: #e5e7eb;
   border: 1px solid #d1d5db;
+}
+
+body.dark {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --accent: #60a5fa;
+  --accent-hover: #93c5fd;
+  --danger: #f87171;
+  --text: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --shadow: rgba(0, 0, 0, 0.35);
+  --success: #4ade80;
+  --error: #f87171;
+  --warning: #fbbf24;
+  --info: #60a5fa;
+}
+
+body.dark {
+  background: var(--bg);
+  color: var(--text);
+}
+
+body.dark .modal {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+body.dark .modal-content {
+  background: var(--card);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.45);
+}
+
+body.dark .day-block {
+  background: var(--card);
+}
+
+body.dark .day-block.empty {
+  background: transparent;
+}
+
+body.dark input[type=text] {
+  background: #0f172a;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.dark button#cancel-btn {
+  background: #334155;
+  color: var(--text);
+}
+
+body.dark .calendar-empty-state {
+  color: #cbd5e1;
+}
+
+body.dark .calendar-empty-state .empty-hint {
+  color: #94a3b8;
+}
+
+body.dark .calendar-legend {
+  color: #cbd5e1;
+}
+
+body.dark .legend-dot--available {
+  background: #334155;
+  border-color: #475569;
 }

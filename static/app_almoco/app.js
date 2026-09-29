@@ -354,6 +354,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
       exportCalendarPdf();
     });
   }
+
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  if(themeToggle){
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme === 'dark'){
+      document.body.classList.add('dark');
+      themeToggle.setAttribute('aria-label', 'Alternar tema claro');
+    }
+    themeToggle.addEventListener('click', ()=>{
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      themeToggle.setAttribute('aria-label', isDark ? 'Alternar tema claro' : 'Alternar tema escuro');
+    });
+  }
 });
 
 function exportCalendarPdf(){
