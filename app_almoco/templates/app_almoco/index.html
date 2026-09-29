@@ -34,14 +34,23 @@
         <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
       </section>
 
-      <section class="calendar" id="calendar">
+      <section class="calendar" id="calendar" aria-label="Calendário do mês">
         <!-- JS will populate days -->
       </section>
+      <div id="calendar-empty-state" class="calendar-empty-state hidden" role="status" aria-live="polite">
+        <div class="empty-icon" aria-hidden="true">🍽️</div>
+        <p>Nenhum almoço agendado neste mês.</p>
+        <p class="empty-hint">Clique em um dia disponível para agendar.</p>
+      </div>
+      <div class="calendar-legend" aria-label="Legenda do calendário">
+        <span class="legend-item"><span class="legend-dot legend-dot--reserved" aria-hidden="true"></span> Dia reservado</span>
+        <span class="legend-item"><span class="legend-dot legend-dot--available" aria-hidden="true"></span> Disponível</span>
+      </div>
     </main>
   </div>
 
   <!-- Modal -->
-  <div id="modal" class="modal hidden">
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-content">
       <h2 id="modal-title">Agendar Almoço</h2>
       <input type="hidden" id="form-dia" name="dia">
@@ -61,7 +70,7 @@
   </div>
 
   <!-- Confirm Modal -->
-  <div id="confirm-modal" class="modal hidden">
+  <div id="confirm-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-message">
     <div class="modal-content">
       <p id="confirm-message">Tem certeza?</p>
       <div class="modal-actions">

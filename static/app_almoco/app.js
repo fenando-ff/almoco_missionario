@@ -3,6 +3,81 @@ function getCookie(name) {
   return v ? v.pop() : '';
 }
 
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add('toast-visible');
+  });
+
+  setTimeout(() => {
+    toast.classList.remove('toast-visible');
+    toast.addEventListener('transitionend', () => {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    });
+  }, 3500);
+}
+
+(function injectToastStyles() {
+  if (document.getElementById('toast-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'toast-styles';
+  style.textContent = `
+    #toast-container {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      max-width: 320px;
+      word-break: break-word;
+    }
+    .toast-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast-info {
+      background: #2b7cff;
+    }
+    .toast-success {
+      background: #22c55e;
+    }
+    .toast-error {
+      background: #ef4444;
+    }
+    .toast-warning {
+      background: #f59e0b;
+      color: #111111;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const container = document.createElement('div');
+  container.id = 'toast-container';
+  document.body.appendChild(container);
+})();
+
 function buildCalendar(){
   const cal = document.getElementById('calendar');
   cal.innerHTML = '';
@@ -86,7 +161,7 @@ function openModal(iso, block){
 function refreshCalendar(){
   // update month title
   const title = document.getElementById('month-title');
-  title.textContent = `${MONTHS_PT[MONTH-1]} ${YEAR}`;
+  if (title) title.textContent = `${MONTHS_PT[MONTH-1]} ${YEAR}`;
   // fetch reservations for current month
   return (async ()=>{
     try{
@@ -105,6 +180,18 @@ function refreshCalendar(){
 
 function closeModal(){
   document.getElementById('modal').classList.add('hidden');
+}
+
+function setButtonLoading(btn, loading){
+  if(!btn) return;
+  if(loading){
+    btn.dataset.originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Carregando...';
+  }else{
+    btn.disabled = false;
+    btn.textContent = btn.dataset.originalText || btn.textContent;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -129,6 +216,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const dia = document.getElementById('form-dia').value;
     const ok = await showConfirm('Deseja desmarcar este dia?');
     if(!ok) return;
+    const deleteBtn = document.getElementById('delete-btn');
+    setButtonLoading(deleteBtn, true);
     const token = getCookie('csrftoken');
     try{
       const res = await fetch('/api/delete/', {
@@ -141,13 +230,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
       delete RESERVATIONS[data.dia];
       buildCalendar();
       closeModal();
+      showToast('Dia desmarcado com sucesso', 'success');
     }catch(err){
-      alert('Erro: '+err.message);
+      showToast('Erro: ' + err.message, 'error');
+    }finally{
+      setButtonLoading(deleteBtn, false);
     }
   });
   // confirm booking (send only dia; backend uses session Pessoa)
   document.getElementById('confirm-btn').addEventListener('click', async ()=>{
     const dia = document.getElementById('form-dia').value;
+    const confirmBtn = document.getElementById('confirm-btn');
+    setButtonLoading(confirmBtn, true);
     const token = getCookie('csrftoken');
     try{
       const res = await fetch('/api/save/', {
@@ -161,8 +255,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
       RESERVATIONS[data.dia] = {nome: data.nome, telefone: data.telefone, owned: (data.owned === true)};
       buildCalendar();
       closeModal();
+      showToast('Almoço agendado com sucesso', 'success');
     }catch(err){
-      alert('Erro: '+err.message);
+      showToast('Erro: ' + err.message, 'error');
+    }finally{
+      setButtonLoading(confirmBtn, false);
     }
   });
   // confirm modal logic
@@ -302,7 +399,8 @@ function exportCalendarPdf(){
   // Use html2pdf to generate and save
   try{
     html2pdf().set(opt).from(wrapper).save();
+    showToast('PDF gerado com sucesso', 'success');
   }catch(e){
-    alert('Erro ao gerar PDF: '+e.message);
+    showToast('Erro ao gerar PDF: ' + e.message, 'error');
   }
 }
