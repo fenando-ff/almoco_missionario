@@ -125,6 +125,10 @@ function buildCalendar(){
 }
 
 function openModal(iso, block){
+  const modal = document.getElementById('modal');
+  if(!modal._lastFocusedElement){
+    modal._lastFocusedElement = document.activeElement;
+  }
   document.getElementById('form-dia').value = iso;
   const existing = RESERVATIONS[iso];
   const deleteBtn = document.getElementById('delete-btn');
@@ -135,27 +139,27 @@ function openModal(iso, block){
   const personPhone = document.getElementById('person-phone');
 
   if(existing){
-    // show person details and desmarcar
     modalMessage.textContent = 'Dia reservado por:';
     personName.textContent = existing.nome;
     personPhone.textContent = existing.telefone;
     modalPerson.classList.remove('hidden');
-    // only show delete button if reservation is owned by current user
     if(existing.owned){
       deleteBtn.classList.remove('hidden');
     }else{
       deleteBtn.classList.add('hidden');
     }
-    // can't book a day already reserved by someone else
     confirmBtn.classList.add('hidden');
   }else{
-    // confirm booking flow
     modalMessage.textContent = 'Deseja agendar neste dia?';
     modalPerson.classList.add('hidden');
     deleteBtn.classList.add('hidden');
     confirmBtn.classList.remove('hidden');
   }
-  document.getElementById('modal').classList.remove('hidden');
+  modal.classList.remove('hidden');
+  requestAnimationFrame(()=>{
+    const firstFocusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if(firstFocusable) firstFocusable.focus();
+  });
 }
 
 function refreshCalendar(){
@@ -179,8 +183,59 @@ function refreshCalendar(){
 }
 
 function closeModal(){
-  document.getElementById('modal').classList.add('hidden');
+  const modal = document.getElementById('modal');
+  modal.classList.add('hidden');
+  if(modal._lastFocusedElement){
+    try{ modal._lastFocusedElement.focus(); }catch(e){}
+    modal._lastFocusedElement = null;
+  }
 }
+
+function trapFocus(modal, e){
+  if(!modal || modal.classList.contains('hidden')) return;
+  const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  if(!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if(e.key === 'Tab'){
+    if(e.shiftKey){
+      if(document.activeElement === first){
+        e.preventDefault();
+        last.focus();
+      }
+    }else{
+      if(document.activeElement === last){
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+}
+
+function handleEscForModal(e, modal){
+  if(e.key === 'Escape' && modal && !modal.classList.contains('hidden')){
+    const cancelBtn = document.getElementById('cancel-btn');
+    if(cancelBtn && cancelBtn.offsetParent !== null){
+      cancelBtn.click();
+    }else{
+      modal.classList.add('hidden');
+    }
+  }
+}
+
+document.addEventListener('keydown', (e)=>{
+  const modal = document.getElementById('modal');
+  const confirmModal = document.getElementById('confirm-modal');
+  trapFocus(modal, e);
+  trapFocus(confirmModal, e);
+  if(e.key === 'Escape'){
+    if(confirmModal && !confirmModal.classList.contains('hidden')){
+      confirmModal.classList.add('hidden');
+      return;
+    }
+    handleEscForModal(e, modal);
+  }
+});
 
 function setButtonLoading(btn, loading){
   if(!btn) return;
@@ -274,6 +329,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
       confirmResolver = resolve;
       confirmMsg.textContent = message;
       confirmModal.classList.remove('hidden');
+      requestAnimationFrame(()=>{
+        const focusable = confirmModal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if(focusable) focusable.focus();
+      });
     });
   }
 
