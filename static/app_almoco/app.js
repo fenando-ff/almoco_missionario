@@ -370,10 +370,38 @@ document.addEventListener('DOMContentLoaded', ()=>{
       themeToggle.setAttribute('aria-label', isDark ? 'Alternar tema claro' : 'Alternar tema escuro');
     });
   }
+
+  const pdfPreviewModal = document.getElementById('pdf-preview-modal');
+  const pdfPreviewBody = document.getElementById('pdf-preview-body');
+  const pdfPreviewCancel = document.getElementById('pdf-preview-cancel');
+  const pdfPreviewSave = document.getElementById('pdf-preview-save');
+  let pdfPreviewResolver = null;
+
+  function closePdfPreview(){
+    pdfPreviewModal.classList.add('hidden');
+    pdfPreviewBody.innerHTML = '';
+    pdfPreviewResolver = null;
+  }
+
+  function showPdfPreview(previewHtml){
+    pdfPreviewBody.innerHTML = previewHtml;
+    pdfPreviewModal.classList.remove('hidden');
+    return new Promise((resolve)=>{
+      pdfPreviewResolver = resolve;
+    });
+  }
+
+  if(pdfPreviewCancel){
+    pdfPreviewCancel.addEventListener('click', closePdfPreview);
+  }
+  if(pdfPreviewSave){
+    pdfPreviewSave.addEventListener('click', async ()=>{
+      if(pdfPreviewResolver) pdfPreviewResolver(true);
+    });
+  }
 });
 
-function exportCalendarPdf(){
-  // Build a printable wrapper with month title, weekdays and calendar
+function buildPdfWrapper(){
   const wrapper = document.createElement('div');
   wrapper.style.padding = '12px';
   wrapper.style.fontFamily = 'Arial, Helvetica, sans-serif';
@@ -391,10 +419,8 @@ function exportCalendarPdf(){
   if(weekdays) wrapper.appendChild(weekdays.cloneNode(true));
   if(calendar) wrapper.appendChild(calendar.cloneNode(true));
 
-  // Enhance cloned calendar: insert owner name and phone into each day-block for export
   const calClone = wrapper.querySelector('.calendar');
   if(calClone){
-    // Ensure weekday labels and calendar grid align in the PDF
     const wkClone = wrapper.querySelector('.weekdays');
     if(wkClone){
       wkClone.style.display = 'grid';
@@ -416,11 +442,9 @@ function exportCalendarPdf(){
     const blocks = calClone.querySelectorAll('.day-block');
     blocks.forEach((block)=>{
       if(block.classList.contains('empty')) return;
-      // remove reserved icon in cloned block so PDF shows only text
       const existingIcon = block.querySelector('.reserved-icon');
       if(existingIcon) existingIcon.remove();
 
-      // add border and padding to visually separate day blocks in PDF
       block.style.border = '1px solid #ddd';
       block.style.borderRadius = '6px';
       block.style.padding = '6px';
@@ -429,7 +453,6 @@ function exportCalendarPdf(){
 
       const dn = block.querySelector('.day-number');
       if(!dn) return;
-      // make day number flow with document in cloned version so text below gets space
       dn.style.position = 'static';
       dn.style.display = 'block';
       dn.style.marginBottom = '10px';
@@ -441,7 +464,6 @@ function exportCalendarPdf(){
       const iso = `${yyyy}-${mm}-${dd}`;
       const res = RESERVATIONS && RESERVATIONS[iso];
       if(res){
-        // create a readable block with name and phone for PDF (larger font)
         const infoWrap = document.createElement('div');
         infoWrap.style.marginTop = '0';
         infoWrap.style.paddingTop = '0';
@@ -463,6 +485,43 @@ function exportCalendarPdf(){
     });
   }
 
+  return wrapper;
+}
+
+async function exportCalendarPdf(){
+  const wrapper = buildPdfWrapper();
+  const previewHtml = wrapper.innerHTML;
+  const previewPage = document.createElement('div');
+  previewPage.className = 'preview-page';
+  previewPage.innerHTML = previewHtml;
+
+  const pdfPreviewModal = document.getElementById('pdf-preview-modal');
+  const pdfPreviewBody = document.getElementById('pdf-preview-body');
+  const pdfPreviewCancel = document.getElementById('pdf-preview-cancel');
+  const pdfPreviewSave = document.getElementById('pdf-preview-save');
+
+  if(!pdfPreviewModal || !pdfPreviewBody){
+    showToast('Preview de PDF não disponível', 'warning');
+    return;
+  }
+
+  pdfPreviewBody.innerHTML = '';
+  pdfPreviewBody.appendChild(previewPage);
+  pdfPreviewModal.classList.remove('hidden');
+
+  const ok = await new Promise((resolve)=>{
+    const onCancel = ()=>{ resolve(false); };
+    const onSave = async ()=>{
+      resolve(true);
+    };
+
+    pdfPreviewCancel.addEventListener('click', onCancel, {once: true});
+    pdfPreviewSave.addEventListener('click', onSave, {once: true});
+  });
+
+  pdfPreviewModal.classList.add('hidden');
+  if(!ok) return;
+
   const opt = {
     margin: 10,
     filename: `calendario-${MONTH}-${YEAR}.pdf`,
@@ -471,9 +530,8 @@ function exportCalendarPdf(){
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  // Use html2pdf to generate and save
   try{
-    html2pdf().set(opt).from(wrapper).save();
+    await html2pdf().set(opt).from(wrapper).save();
     showToast('PDF gerado com sucesso', 'success');
   }catch(e){
     showToast('Erro ao gerar PDF: ' + e.message, 'error');

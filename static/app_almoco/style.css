@@ -656,3 +656,25 @@ body.dark .legend-dot--available {
   background: #334155;
   border-color: #475569;
 }
+
+#pdf-preview-modal .modal-content {
+  max-width: 960px;
+  width: 94%;
+}
+
+.pdf-preview-body {
+  max-height: 70vh;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  padding: 12px;
+}
+
+.pdf-preview-body .preview-page {
+  background: #fff;
+  color: #111;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}

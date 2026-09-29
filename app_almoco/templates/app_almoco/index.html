@@ -81,6 +81,18 @@
     </div>
   </div>
 
+  <!-- PDF Preview Modal -->
+  <div id="pdf-preview-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pdf-preview-title">
+    <div class="modal-content modal-content--wide">
+      <h2 id="pdf-preview-title">Preview do PDF</h2>
+      <div id="pdf-preview-body" class="pdf-preview-body"></div>
+      <div class="modal-actions">
+        <button type="button" id="pdf-preview-cancel">Cancelar</button>
+        <button type="button" id="pdf-preview-save" class="danger">Salvar PDF</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let RESERVATIONS = {};
     let YEAR = {{ year }};
