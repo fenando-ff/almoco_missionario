@@ -358,16 +358,28 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // Theme toggle
   const themeToggle = document.getElementById('theme-toggle');
   if(themeToggle){
+    const icon = themeToggle.querySelector('i');
     const savedTheme = localStorage.getItem('theme');
-    if(savedTheme === 'dark'){
-      document.body.classList.add('dark');
-      themeToggle.setAttribute('aria-label', 'Alternar tema claro');
-    }
+    const applyTheme = (isDark)=>{
+      if(isDark){
+        document.body.classList.add('dark');
+        themeToggle.setAttribute('aria-label', 'Alternar tema claro');
+        if(icon){
+          icon.className = 'fas fa-sun';
+        }
+      }else{
+        document.body.classList.remove('dark');
+        themeToggle.setAttribute('aria-label', 'Alternar tema escuro');
+        if(icon){
+          icon.className = 'fas fa-moon';
+        }
+      }
+    };
+    applyTheme(savedTheme === 'dark');
     themeToggle.addEventListener('click', ()=>{
-      document.body.classList.toggle('dark');
-      const isDark = document.body.classList.contains('dark');
+      const isDark = !document.body.classList.contains('dark');
+      applyTheme(isDark);
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      themeToggle.setAttribute('aria-label', isDark ? 'Alternar tema claro' : 'Alternar tema escuro');
     });
   }
 

@@ -219,10 +219,18 @@ body {
   background: var(--accent-hover);
 }
 
+#theme-toggle i {
+  font-size: 1rem;
+  line-height: 1;
+}
+
 @media (max-width: 519px) {
   .nav-btn {
     padding: 8px 10px;
     border-radius: 6px;
+  }
+  #theme-toggle i {
+    font-size: 0.95rem;
   }
 }
 
