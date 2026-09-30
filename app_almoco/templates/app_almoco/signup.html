@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Cadastro - Agendar Almoço</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{% static 'app_almoco/style.css' %}">
 </head>
 <body class="auth-page">
@@ -12,13 +13,7 @@
   <div class="auth-wrapper">
     <div class="auth-card">
       <div class="auth-logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-          <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-          <line x1="6" y1="1" x2="6" y2="4"></line>
-          <line x1="10" y1="1" x2="10" y2="4"></line>
-          <line x1="14" y1="1" x2="14" y2="4"></line>
-        </svg>
+        <i class="fas fa-utensils"></i>
       </div>
       <h2 class="auth-title">Criar Conta</h2>
       {% if error %}

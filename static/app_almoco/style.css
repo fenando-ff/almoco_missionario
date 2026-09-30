@@ -932,6 +932,11 @@ body.auth-page .user-banner {
   color: #ffffff;
 }
 
+.auth-logo .fas {
+  font-size: 32px;
+  color: #ffffff;
+}
+
 .auth-title {
   font-size: 1.5rem;
   font-weight: 700;
