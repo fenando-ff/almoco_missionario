@@ -715,6 +715,37 @@ body.dark .day-block.empty {
   background: transparent;
 }
 
+body.dark .weekdays div {
+  color: #e2e8f0;
+  font-weight: 700;
+}
+
+body.dark .day-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+body.dark .day-number {
+  color: #f1f5f9;
+}
+
+body.dark .day-info {
+  color: #e2e8f0;
+}
+
+body.dark .day-info .phone {
+  color: #cbd5e1;
+}
+
+body.dark .reserved-icon {
+  background: var(--accent);
+  color: #0f172a;
+}
+
+body.dark .reserved-icon i {
+  color: #0f172a;
+}
+
 body.dark input[type=text] {
   background: #0f172a;
   color: var(--text);
