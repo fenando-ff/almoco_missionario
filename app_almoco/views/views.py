@@ -147,15 +147,16 @@ def login_view(request):
 		nome = request.POST.get('nome')
 		telefone = request.POST.get('telefone')
 		if not (nome and telefone):
-			return render(request, 'app_almoco/login.html', {'error': 'Nome e telefone são obrigatórios'})
+			return render(request, 'app_almoco/login.html', {'error': 'Preencha nome e telefone para entrar.'})
 		try:
 			pessoa = Pessoa.objects.get(nome_completo=nome, telefone=telefone)
 			request.session['pessoa_id'] = pessoa.pk
 			request.session['pessoa_name'] = pessoa.nome_completo
 			return redirect('app_almoco:index')
 		except Pessoa.DoesNotExist:
-			# redirect to signup page if not found
-			return redirect('app_almoco:signup')
+			return render(request, 'app_almoco/login.html', {'error': 'Dados incorretos. Verifique nome e telefone ou cadastre-se.'})
+		except Exception:
+			return render(request, 'app_almoco/login.html', {'error': 'Erro no sistema ao entrar. Tente novamente mais tarde.'})
 
 	return render(request, 'app_almoco/login.html')
 
@@ -172,10 +173,13 @@ def signup_view(request):
 		nome = request.POST.get('nome')
 		telefone = request.POST.get('telefone')
 		if not (nome and telefone):
-			return render(request, 'app_almoco/signup.html', {'error': 'Nome e telefone são obrigatórios'})
-		pessoa, created = Pessoa.objects.get_or_create(nome_completo=nome, telefone=telefone)
-		request.session['pessoa_id'] = pessoa.pk
-		request.session['pessoa_name'] = pessoa.nome_completo
-		return redirect('app_almoco:index')
+			return render(request, 'app_almoco/signup.html', {'error': 'Preencha nome e telefone para criar sua conta.'})
+		try:
+			pessoa, created = Pessoa.objects.get_or_create(nome_completo=nome, telefone=telefone)
+			request.session['pessoa_id'] = pessoa.pk
+			request.session['pessoa_name'] = pessoa.nome_completo
+			return redirect('app_almoco:index')
+		except Exception:
+			return render(request, 'app_almoco/signup.html', {'error': 'Erro no sistema ao cadastrar. Tente novamente mais tarde.'})
 
 	return render(request, 'app_almoco/signup.html')

@@ -26,8 +26,15 @@
           <button id="prev-month" class="nav-btn">◀</button>
           <h1 id="month-title">{{ month_name }} {{ year }}</h1>
           <button id="next-month" class="nav-btn">▶</button>
-          <button id="export-pdf" class="nav-btn" title="Exportar calendário como PDF">Exportar PDF</button>
-          <button id="theme-toggle" class="nav-btn" title="Alternar tema" aria-label="Alternar tema escuro"><i class="fas fa-moon"></i></button>
+          <button id="menu-toggle" class="nav-btn menu-toggle" aria-label="Abrir menu" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div id="header-menu" class="header-menu hidden">
+            <button id="export-pdf" class="menu-btn" title="Exportar calendário como PDF">Exportar PDF</button>
+            <button id="theme-toggle" class="menu-btn" title="Alternar tema" aria-label="Alternar tema escuro">
+              <i class="fas fa-moon"></i> Tema
+            </button>
+          </div>
         </div>
       </header>
 

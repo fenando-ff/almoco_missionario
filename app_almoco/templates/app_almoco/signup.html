@@ -7,28 +7,41 @@
   <title>Cadastro - Agendar Almoço</title>
   <link rel="stylesheet" href="{% static 'app_almoco/style.css' %}">
 </head>
-<body>
-  <div class="welcome-banner">Cadastro</div>
-  <div class="page-main">
-    <main class="container">
-      <div class="card">
-        <h2>Cadastro</h2>
-        {% if error %}
-          <p class="form-error">{{ error }}</p>
-        {% endif %}
-        <form method="post" action="{% url 'app_almoco:signup' %}">
-          {% csrf_token %}
-          <label for="nome">Nome</label>
-          <input type="text" id="nome" name="nome" required placeholder="Seu nome aqui">
-          <label for="telefone">Telefone</label>
-          <input type="text" id="telefone" name="telefone" data-phone-input inputmode="numeric" required placeholder="(00) 90000-0000">
-          <div class="form-actions">
-            <button type="submit">Cadastrar</button>
-          </div>
-        </form>
-        <p class="form-footer">Já tem conta? <a href="{% url 'app_almoco:login' %}">Entrar</a></p>
+<body class="auth-page">
+  <div class="auth-background" aria-hidden="true"></div>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+          <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+          <line x1="6" y1="1" x2="6" y2="4"></line>
+          <line x1="10" y1="1" x2="10" y2="4"></line>
+          <line x1="14" y1="1" x2="14" y2="4"></line>
+        </svg>
       </div>
-    </main>
+      <h2 class="auth-title">Criar Conta</h2>
+      {% if error %}
+        <p class="form-error">{{ error }}</p>
+      {% endif %}
+      <form method="post" action="{% url 'app_almoco:signup' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="nome">Nome completo</label>
+          <input type="text" id="nome" name="nome" required placeholder="Seu nome completo">
+        </div>
+        <div class="form-group">
+          <label for="telefone">Telefone com DDD</label>
+          <input type="text" id="telefone" name="telefone" data-phone-input inputmode="numeric" required placeholder="(00) 00000-0000">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Cadastrar</button>
+        </div>
+      </form>
+      <p class="form-footer">
+        Já possui uma conta? <a href="{% url 'app_almoco:login' %}">Entrar</a>
+      </p>
+    </div>
   </div>
   <script src="{% static 'app_almoco/phone.js' %}"></script>
 </body>
