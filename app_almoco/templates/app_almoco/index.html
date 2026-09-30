@@ -12,20 +12,18 @@
 <script src="//tag.goadopt.io/injector.js?website_code=3156c246-0920-4576-8d73-73d2e595e591" class="adopt-injector"></script>
 </head>
 <body>
-  <div class="welcome-banner">Bem-vinda {{ pessoa_name }} — Agende seu almoço</div>
-  <div class="user-banner">
-    <div class="header-actions">
-      <button id="logout-btn" class="logout-btn" onclick="location.href='{% url 'app_almoco:logout' %}'">Sair</button>
-    </div>
+  <div class="welcome-banner">
+    <span class="welcome-text">Olá, {{ pessoa_name }}</span>
+    <button id="logout-btn" class="logout-btn" onclick="location.href='{% url 'app_almoco:logout' %}'">Sair</button>
   </div>
   <div class="page-main">
     <main class="container">
 
       <header class="month-header">
         <div class="month-nav">
-          <button id="prev-month" class="nav-btn">◀</button>
+          <button id="prev-month" class="nav-btn" aria-label="Mês anterior"><i class="fas fa-chevron-left"></i></button>
           <h1 id="month-title">{{ month_name }} {{ year }}</h1>
-          <button id="next-month" class="nav-btn">▶</button>
+          <button id="next-month" class="nav-btn" aria-label="Próximo mês"><i class="fas fa-chevron-right"></i></button>
           <button id="menu-toggle" class="nav-btn menu-toggle" aria-label="Abrir menu" aria-expanded="false">
             <i class="fas fa-bars"></i>
           </button>

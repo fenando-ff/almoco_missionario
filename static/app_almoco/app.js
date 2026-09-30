@@ -81,50 +81,67 @@ function showToast(message, type = 'info') {
 function buildCalendar(){
   const cal = document.getElementById('calendar');
   cal.innerHTML = '';
-  // compute days in month and first weekday (Sunday=0)
   const daysInMonth = new Date(YEAR, MONTH, 0).getDate();
-  const firstWeekday = new Date(YEAR, MONTH-1, 1).getDay(); // 0=Sunday
-  const offset = firstWeekday; // Sunday-first calendar
-  const totalCells = offset + daysInMonth;
+  const firstWeekday = new Date(YEAR, MONTH-1, 1).getDay();
+  const offset = firstWeekday;
+  const prevMonthDays = new Date(YEAR, MONTH-1, 0).getDate();
+  const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+
   for(let i=0;i<totalCells;i++){
     const block = document.createElement('div');
+    let dayNum;
+    let isOutside = false;
+
     if(i < offset){
-      block.className = 'day-block empty';
-      cal.appendChild(block);
-      continue;
+      dayNum = prevMonthDays - offset + i + 1;
+      isOutside = true;
+    } else if(i >= offset + daysInMonth){
+      dayNum = i - offset - daysInMonth + 1;
+      isOutside = true;
+    } else {
+      dayNum = i - offset + 1;
     }
-    const dayNum = i - offset + 1;
-    block.className = 'day-block';
-    const dn = document.createElement('div'); dn.className='day-number'; dn.textContent = dayNum;
+
+    block.className = isOutside ? 'day-block outside' : 'day-block';
+    const dn = document.createElement('div');
+    dn.className = 'day-number';
+    dn.textContent = dayNum;
     block.appendChild(dn);
 
-    const yyyy = String(YEAR).padStart(4,'0');
-    const mm = String(MONTH).padStart(2,'0');
-    const dd = String(dayNum).padStart(2,'0');
-    const iso = `${yyyy}-${mm}-${dd}`;
+    if(!isOutside){
+      const today = new Date();
+      if(today.getFullYear() === YEAR && today.getMonth()+1 === MONTH && today.getDate() === dayNum){
+        block.classList.add('selected');
+      }
 
-    if(RESERVATIONS && RESERVATIONS[iso]){
-      // show a reserved icon instead of full text inside the calendar cell
-      const icon = document.createElement('div');
-      icon.className = 'reserved-icon';
-      // tooltip with details for desktop; mobile can open modal to view details
-      icon.title = `${RESERVATIONS[iso].nome} - ${RESERVATIONS[iso].telefone}`;
-      // accessible text for screen readers
-      icon.setAttribute('aria-label', `Reservado por ${RESERVATIONS[iso].nome}`);
-      // use FontAwesome utensils icon
-      const i = document.createElement('i');
-      i.className = 'fa-solid fa-utensils';
-      i.setAttribute('aria-hidden', 'true');
-      icon.appendChild(i);
-      block.appendChild(icon);
+      const yyyy = String(YEAR).padStart(4,'0');
+      const mm = String(MONTH).padStart(2,'0');
+      const dd = String(dayNum).padStart(2,'0');
+      const iso = `${yyyy}-${mm}-${dd}`;
+
+      if(RESERVATIONS && RESERVATIONS[iso]){
+        const icon = document.createElement('div');
+        icon.className = 'reserved-icon';
+        icon.title = `${RESERVATIONS[iso].nome} - ${RESERVATIONS[iso].telefone}`;
+        icon.setAttribute('aria-label', `Reservado por ${RESERVATIONS[iso].nome}`);
+        const ico = document.createElement('i');
+        ico.className = 'fa-solid fa-utensils';
+        ico.setAttribute('aria-hidden', 'true');
+        icon.appendChild(ico);
+        block.appendChild(icon);
+      }
+
+      block.addEventListener('click', ()=>openModal(iso, block));
     }
 
-    block.addEventListener('click', ()=>openModal(iso, block));
     cal.appendChild(block);
   }
 }
 
 function openModal(iso, block){
+  document.querySelectorAll('.day-block.selected').forEach((el)=>el.classList.remove('selected'));
+  block.classList.add('selected');
+
   const modal = document.getElementById('modal');
   if(!modal._lastFocusedElement){
     modal._lastFocusedElement = document.activeElement;
@@ -162,7 +179,13 @@ function openModal(iso, block){
   });
 }
 
-function refreshCalendar(){
+function refreshCalendar(direction){
+  const cal = document.getElementById('calendar');
+  if(cal && direction){
+    cal.classList.remove('slide-left', 'slide-right');
+    void cal.offsetWidth;
+    cal.classList.add(direction === 'next' ? 'slide-left' : 'slide-right');
+  }
   // update month title
   const title = document.getElementById('month-title');
   if (title) title.textContent = `${MONTHS_PT[MONTH-1]} ${YEAR}`;
@@ -179,6 +202,11 @@ function refreshCalendar(){
       RESERVATIONS = {};
     }
     buildCalendar();
+    if(cal && direction){
+      cal.classList.remove('slide-left', 'slide-right');
+      cal.classList.add('calendar-enter');
+      setTimeout(()=>cal.classList.remove('calendar-enter'), 300);
+    }
   })();
 }
 
@@ -249,20 +277,47 @@ function setButtonLoading(btn, loading){
   }
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  // fetch reservations for current month from server
-  refreshCalendar();
-  // setup month navigation
-  document.getElementById('prev-month').addEventListener('click', ()=>{
-    MONTH -= 1;
-    if(MONTH < 1){ YEAR -= 1; MONTH = 12; }
+  document.addEventListener('DOMContentLoaded', ()=>{
+    // fetch reservations for current month from server
     refreshCalendar();
-  });
-  document.getElementById('next-month').addEventListener('click', ()=>{
-    MONTH += 1;
-    if(MONTH > 12){ YEAR += 1; MONTH = 1; }
-    refreshCalendar();
-  });
+    // setup month navigation
+    document.getElementById('prev-month').addEventListener('click', ()=>{
+      MONTH -= 1;
+      if(MONTH < 1){ YEAR -= 1; MONTH = 12; }
+      refreshCalendar('prev');
+    });
+    document.getElementById('next-month').addEventListener('click', ()=>{
+      MONTH += 1;
+      if(MONTH > 12){ YEAR += 1; MONTH = 1; }
+      refreshCalendar('next');
+    });
+    // swipe navigation for mobile
+    const calendar = document.getElementById('calendar');
+    let touchStartX = 0;
+    let touchEndX = 0;
+    if(calendar){
+      calendar.addEventListener('touchstart', (e)=>{
+        touchStartX = e.changedTouches[0].screenX;
+      }, {passive: true});
+      calendar.addEventListener('touchend', (e)=>{
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, {passive: true});
+    }
+    function handleSwipe(){
+      const diff = touchStartX - touchEndX;
+      const threshold = 50;
+      if(Math.abs(diff) < threshold) return;
+      if(diff > 0){
+        MONTH += 1;
+        if(MONTH > 12){ YEAR += 1; MONTH = 1; }
+        refreshCalendar('next');
+      } else {
+        MONTH -= 1;
+        if(MONTH < 1){ YEAR -= 1; MONTH = 12; }
+        refreshCalendar('prev');
+      }
+    }
   // set initial month title
   const title = document.getElementById('month-title');
   if(title){ title.textContent = `${MONTHS_PT[MONTH-1]} ${YEAR}`; }
@@ -469,7 +524,7 @@ function buildPdfWrapper(){
 
     const blocks = calClone.querySelectorAll('.day-block');
     blocks.forEach((block)=>{
-      if(block.classList.contains('empty')) return;
+      if(block.classList.contains('empty') || block.classList.contains('outside')) return;
       const existingIcon = block.querySelector('.reserved-icon');
       if(existingIcon) existingIcon.remove();
 
